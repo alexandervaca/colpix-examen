@@ -59,8 +59,34 @@ If you want to learn more about building native executables, please consult <htt
 
 ## Provided Code
 
-### REST
+# Employee Management REST API with AWS Integration
 
-Easily start your REST Web Services
+Este proyecto implementa una API RESTful desarrollada con Java 17 y Quarkus 3.17.6, desplegable sobre infraestructura de AWS. Está orientada a la gestión de empleados e incorpora autenticación con JWT, manejo de sesiones temporales, operaciones CRUD básicas y consultas optimizadas de manera asíncrona.
 
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+## 🔧 Tecnologías Utilizadas
+
+- **Java 17**
+- **Quarkus 3.17.6 (Quarkus, Spring Security, Hibernate)**
+- **JWT (JSON Web Token) para autenticación**
+- **AWS RDS (PostgreSQL/MySQL)**
+- **AWS Lambda (opcional para escalabilidad)**
+- **AWS API Gateway**
+- **OpenAPI (Swagger) para documentación**
+- **Maven**
+- **Docker (opcional para despliegue local)**
+
+---
+
+## ✅ Funcionalidades
+
+### 1. Login
+- Endpoint: `POST /api/auth/login`
+- Permite autenticarse con usuario y contraseña.
+- Devuelve un **token JWT** con expiración por defecto de **5 minutos** (parametrizable por configuración).
+- Ejemplo de request:
+```json
+{
+  "username": "usuario",
+  "password": "clave123"
+}
+
