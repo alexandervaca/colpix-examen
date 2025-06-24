@@ -1,4 +1,4 @@
-package org.acme.exception;
+package org.colpix.exception;
 
 public class EntityNotFoundException extends RuntimeException {
     

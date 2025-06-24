@@ -1,4 +1,4 @@
-package org.acme.health;
+package org.colpix.health;
 
 import org.eclipse.microprofile.health.Liveness;
 import org.eclipse.microprofile.health.HealthCheck;

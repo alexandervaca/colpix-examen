@@ -1,5 +1,6 @@
-package org.acme.rest.json;
+package org.colpix.rest.json;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Fruit {
+public class UserDTO {
 
     private Long id;
 
@@ -19,7 +20,10 @@ public class Fruit {
     @NotEmpty(message="Name may not be empty")
     private String name;
 
-    @NotBlank(message="Description may not be blank")
-    private String description;
+    @Email(message = "Email not valid")
+    private String email;
+
+    @NotBlank(message="Role may not be blank")
+    private String role;
 
 }

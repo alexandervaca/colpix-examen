@@ -1,4 +1,4 @@
-package org.acme.rest.json;
+package org.colpix.rest.json;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

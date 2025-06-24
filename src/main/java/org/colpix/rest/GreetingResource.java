@@ -1,4 +1,4 @@
-package org.acme.rest;
+package org.colpix.rest;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -6,8 +6,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.acme.rest.json.ResponseBody;
-import org.acme.rest.json.Status;
+import org.colpix.rest.json.ResponseBody;
+import org.colpix.rest.json.Status;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
