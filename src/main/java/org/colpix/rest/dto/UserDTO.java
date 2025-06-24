@@ -1,4 +1,4 @@
-package org.colpix.rest.json;
+package org.colpix.rest.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -6,9 +6,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.colpix.rest.json.ResponseBody;
-import org.colpix.rest.json.Status;
-import org.colpix.rest.json.UserDTO;
+import org.colpix.rest.dto.ResponseBody;
+import org.colpix.rest.dto.Status;
+import org.colpix.rest.dto.UserDTO;
 import org.colpix.service.UserService;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -24,13 +24,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Path("/users")
+/*@Path("/users")
 @Slf4j
 @OpenAPIDefinition(
     info = @Info(title="Example API", version = "1.0.1", license = @License(
-    name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0.html")))
+    name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0.html")))*/
 public class UserResource {
-
+/*
     @Inject
     UserService userService;
 
@@ -111,18 +111,9 @@ public class UserResource {
 
         var userResponse = userService.create(userDTO);
 
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(Status.builder()
-                        .code(Response.Status.OK.getStatusCode())
-                        .description(Response.Status.OK.getReasonPhrase())
-                        .build())
-                .data(userResponse)
-                .date(LocalDateTime.now())
-                .build();
-
         log.info("create - end. Created user with id: {}", userResponse.getId());
 
-        return Response.ok(responseBody).build();
+        return buildOkResponse(userResponse);
     }
 
     @PUT
@@ -195,5 +186,5 @@ public class UserResource {
                 .build();
 
         return Response.status(status).entity(body).build();
-    }
+    }*/
 }

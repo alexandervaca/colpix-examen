@@ -1,4 +1,4 @@
-package org.colpix.rest.json;
+package org.colpix.rest.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponseBody {
-    private Status status;
-    private Object data;
+public class Greeting {
+    private String value;
     private LocalDateTime date;
 }

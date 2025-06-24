@@ -1,4 +1,4 @@
-package org.colpix.rest.json;
+package org.colpix.rest.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

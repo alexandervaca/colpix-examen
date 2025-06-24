@@ -1,6 +1,6 @@
 package org.colpix.repository;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.colpix.repository.entity.UserEntity;
 
@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ApplicationScoped
-public class UserRepository implements PanacheRepository<UserEntity> {
-
+//@ApplicationScoped
+public class UserRepository {//implements PanacheRepository<UserEntity> {
+/*
     public List<UserEntity> filter(String name, String email, String role) {
         StringBuilder query = new StringBuilder("1=1");
         Map<String, Object> params = new HashMap<>();
@@ -36,5 +36,5 @@ public class UserRepository implements PanacheRepository<UserEntity> {
     public boolean deleteByIdIfExists(Long id) {
         return deleteById(id);
     }
-
+*/
 }

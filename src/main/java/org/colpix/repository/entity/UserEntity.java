@@ -1,9 +1,9 @@
 package org.colpix.repository.entity;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.colpix.rest.json.UserDTO;
+import org.colpix.rest.dto.UserDTO;
 
 @Entity
 @Table(name = "users")

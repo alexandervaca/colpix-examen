@@ -8,15 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.colpix.exception.ErrorCreateEntityException;
 import org.colpix.repository.UserRepository;
 import org.colpix.repository.entity.UserEntity;
-import org.colpix.rest.json.UserDTO;
+import org.colpix.rest.dto.UserDTO;
 
 import java.util.List;
 import java.util.Optional;
 
-@ApplicationScoped
-@Slf4j
+//@ApplicationScoped
+//@Slf4j
 public class UserService {
-
+/*
     @Inject
     UserRepository userRepository;
 
@@ -112,5 +112,5 @@ public class UserService {
 
         return deleted;
     }
-
+*/
 }
