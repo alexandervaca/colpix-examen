@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.colpix.rest.dto.UserDTO;
 
 @Entity
 @Table(name = "users")
@@ -21,4 +22,10 @@ public class UserEntity extends PanacheEntity {
     @Column(nullable = false)
     private String password;
 
+    public UserDTO toDTO() {
+        return UserDTO.builder()
+                .username(this.username)
+                .passwordHash(this.password)
+                .build();
+    }
 }

@@ -85,7 +85,7 @@ Todos los endpoints excepto el de login deben validar el token de sesión y devo
 - **OpenAPI (Swagger) para documentación**
 - **Maven**
 
-### Para generacion de claves
+### Para generacion de claves publica y privada se uso lo siguiente:
 - **openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out privateKey.pem**
 - **openssl rsa -in privateKey.pem -pubout -out publicKey.pem**
 
