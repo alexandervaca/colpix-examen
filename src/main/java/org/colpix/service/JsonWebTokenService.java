@@ -7,9 +7,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-@Singleton
+//@Singleton
 public class JsonWebTokenService {
-
+/*
     public String generateJwt() {
         Set<String> roles = new HashSet<>(Arrays.asList("admin", "client"));
 
@@ -18,5 +18,5 @@ public class JsonWebTokenService {
                 .groups(roles)
                 .expiresAt(System.currentTimeMillis() + 3600)
                 .sign();
-    }
+    }*/
 }

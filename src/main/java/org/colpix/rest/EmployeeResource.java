@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Slf4j
-@RolesAllowed({"admin", "user"})
+@RolesAllowed({"user"})
 public class EmployeeResource {
 
     @Inject

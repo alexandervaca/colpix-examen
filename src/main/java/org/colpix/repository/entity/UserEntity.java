@@ -1,9 +1,10 @@
 package org.colpix.repository.entity;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.colpix.rest.dto.UserDTO;
 
 @Entity
 @Table(name = "users")
@@ -14,11 +15,10 @@ import org.colpix.rest.dto.UserDTO;
 @Setter
 public class UserEntity extends PanacheEntity {
 
-    private String name;
-    private String email;
-    private String role;
+    @Column(nullable = false, unique = true)
+    private String username;
 
-    public UserDTO toUser() {
-        return UserDTO.builder().id(this.id).name(name).email(email).role(role).build();
-    }
+    @Column(nullable = false)
+    private String password;
+
 }

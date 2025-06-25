@@ -1,40 +1,38 @@
 package org.colpix.repository;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
+import io.smallrye.mutiny.Uni;
+import io.vertx.mutiny.pgclient.PgPool;
+import io.vertx.mutiny.sqlclient.Row;
+import io.vertx.mutiny.sqlclient.Tuple;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.colpix.repository.entity.UserEntity;
+import org.colpix.rest.dto.UserDTO;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
-//@ApplicationScoped
-public class UserRepository {//implements PanacheRepository<UserEntity> {
-/*
-    public List<UserEntity> filter(String name, String email, String role) {
-        StringBuilder query = new StringBuilder("1=1");
-        Map<String, Object> params = new HashMap<>();
+@ApplicationScoped
+public class UserRepository implements PanacheRepository<UserEntity> {
 
-        if (name != null && !name.isEmpty()) {
-            query.append(" AND LOWER(name) LIKE LOWER(CONCAT('%', :name, '%'))");
-            params.put("name", name);
-        }
-
-        if (email != null && !email.isEmpty()) {
-            query.append(" AND LOWER(email) LIKE LOWER(CONCAT('%', :email, '%'))");
-            params.put("email", email);
-        }
-
-        if (role != null && !role.isEmpty()) {
-            query.append(" AND role = :role");
-            params.put("role", role);
-        }
-
-        return find(query.toString(), params).list();
+    public Uni<Optional<UserEntity>> findByUsernameReactive(String username) {
+        return find("username", username).firstResult()
+                .map(user -> Optional.ofNullable((UserEntity) user));
     }
 
-    public boolean deleteByIdIfExists(Long id) {
-        return deleteById(id);
+    @Inject
+    PgPool client;
+
+    public Uni<Optional<UserDTO>> findByUsername(String username) {
+        return client.preparedQuery("SELECT username, password FROM users WHERE username = $1")
+                .execute(Tuple.of(username))
+                .onItem().transform(pgRowSet -> {
+                    if (!pgRowSet.iterator().hasNext()) return Optional.empty();
+                    Row row = pgRowSet.iterator().next();
+                    UserDTO user = new UserDTO();
+                    user.username = row.getString("username");
+                    user.passwordHash = row.getString("password");
+                    return Optional.of(user);
+                });
     }
-*/
 }

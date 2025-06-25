@@ -63,7 +63,7 @@ If you want to learn more about building native executables, please consult <htt
 
 Este proyecto implementa una API RESTful desarrollada con Java 17 y Quarkus 3.17.6, desplegable sobre infraestructura de AWS. Está orientada a la gestión de empleados e incorpora autenticación con JWT, manejo de sesiones temporales, operaciones CRUD básicas y consultas optimizadas de manera asíncrona.
 
-# REST API + AWS
+# REST API
 # Descripcion del challenge solicitado
 
 Se requiere crear una API RESTFul utilizando servicios de AWS, con las siguientes funcionalidades:
@@ -79,14 +79,15 @@ Todos los endpoints excepto el de login deben validar el token de sesión y devo
 ## 🔧 Tecnologías Utilizadas
 
 - **Java 17**
-- **Quarkus 3.17.6 (Quarkus, Spring Security, Hibernate)**
+- **Quarkus 3.17.6 (Quarkus, Quarkus Security, Hibernate)**
 - **JWT (JSON Web Token) para autenticación**
-- **AWS RDS (PostgreSQL/MySQL)**
-- **AWS Lambda (opcional para escalabilidad)**
-- **AWS API Gateway**
+- **PostgreSQL)**
 - **OpenAPI (Swagger) para documentación**
 - **Maven**
-- **Docker (opcional para despliegue local)**
+
+### Para generacion de claves
+- **openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out privateKey.pem**
+- **openssl rsa -in privateKey.pem -pubout -out publicKey.pem**
 
 ---
 
@@ -102,4 +103,5 @@ Todos los endpoints excepto el de login deben validar el token de sesión y devo
   "username": "usuario",
   "password": "clave123"
 }
+
 
