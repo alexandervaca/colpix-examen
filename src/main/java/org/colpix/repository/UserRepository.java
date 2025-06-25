@@ -17,7 +17,7 @@ public class UserRepository implements PanacheRepository<UserEntity> {
 
     public Uni<Optional<UserEntity>> findByUsernameReactive(String username) {
         return find("username", username).firstResult()
-                .map(user -> Optional.ofNullable((UserEntity) user));
+                .map(Optional::ofNullable);
     }
 
     @Inject

@@ -9,8 +9,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.colpix.rest.dto.EmployeeDTO;
-import org.colpix.rest.dto.ResponseBody;
-import org.colpix.rest.dto.Status;
 import org.colpix.service.EmployeeService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -18,8 +16,6 @@ import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-
-import java.time.LocalDateTime;
 
 @Path("/employees")
 @Produces(MediaType.APPLICATION_JSON)
@@ -37,9 +33,10 @@ public class EmployeeResource {
         log.info("list - fetching all employees");
 
         return employeeService.findAll()
-                .onItem().transform(this::buildOkResponse)
+                .onItem().transform(HelpersResponse::buildOkResponse)
                 .onFailure().recoverWithItem(this::buildInternalError);
     }
+
     @GET
     @Path("/{id}")
     @Operation(summary = "Get employee by ID, including subordinate count")
@@ -52,15 +49,15 @@ public class EmployeeResource {
                 .onItem().transform(employeeOpt -> {
                     if (employeeOpt.isEmpty()) {
                         log.warn("getById - Employee not found with id: {}", id);
-                        return buildErrorResponse(Response.Status.NOT_FOUND, "Employee not found with id: " + id);
+                        return HelpersResponse.buildErrorResponse(Response.Status.NOT_FOUND, "Employee not found with id: " + id);
                     }
 
                     log.info("getById - Employee found with id: {}", id);
-                    return buildOkResponse(employeeOpt.get());
+                    return HelpersResponse.buildOkResponse(employeeOpt.get());
                 })
                 .onFailure().invoke(e -> log.error("getById - Error: {}", e.getMessage(), e))
                 .onFailure().recoverWithItem(
-                        buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
+                        HelpersResponse.buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
                                 "Unexpected error occurred while retrieving employee.")
                 );
     }
@@ -78,11 +75,11 @@ public class EmployeeResource {
         return employeeService.create(dto)
                 .onItem().transform(emp -> {
                     log.info("create - Created employee with id: {}", emp.getId());
-                    return buildOkResponse(emp, Response.Status.CREATED);
+                    return HelpersResponse.buildOkResponse(emp, Response.Status.CREATED);
                 })
                 .onFailure().invoke(e -> log.error("create - Error: {}", e.getMessage(), e))
                 .onFailure().recoverWithItem(
-                        buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Error creating employee")
+                        HelpersResponse.buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Error creating employee")
                 );
     }
 
@@ -102,14 +99,14 @@ public class EmployeeResource {
                 .onItem().transform(opt -> {
                     if (opt.isEmpty()) {
                         log.warn("update - Employee not found with id: {}", id);
-                        return buildErrorResponse(Response.Status.NOT_FOUND, "Employee not found with id: " + id);
+                        return HelpersResponse.buildErrorResponse(Response.Status.NOT_FOUND, "Employee not found with id: " + id);
                     }
                     log.info("update - Updated employee with id: {}", id);
-                    return buildOkResponse(opt.get());
+                    return HelpersResponse.buildOkResponse(opt.get());
                 })
                 .onFailure().invoke(e -> log.error("update - Error: {}", e.getMessage(), e))
                 .onFailure().recoverWithItem(
-                        buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Error updating employee")
+                        HelpersResponse.buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Error updating employee")
                 );
     }
 
@@ -121,49 +118,19 @@ public class EmployeeResource {
                 .onItem().transform(deleted -> {
                     if (!deleted) {
                         log.warn("delete - Employee not found with id: {}", id);
-                        return buildErrorResponse(Response.Status.NOT_FOUND, "Employee not found with id: " + id);
+                        return HelpersResponse.buildErrorResponse(Response.Status.NOT_FOUND, "Employee not found with id: " + id);
                     }
                     log.info("delete - Deleted employee with id: {}", id);
-                    return buildOkResponse("Employee with id " + id + " deleted");
+                    return HelpersResponse.buildOkResponse("Employee with id " + id + " deleted");
                 })
                 .onFailure().invoke(e -> log.error("delete - Error: {}", e.getMessage(), e))
                 .onFailure().recoverWithItem(
-                        buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Error deleting employee")
+                        HelpersResponse.buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Error deleting employee")
                 );
-    }
-
-    // Helpers
-    private Response buildOkResponse(Object data) {
-        return buildOkResponse(data, Response.Status.OK);
-    }
-
-    private Response buildOkResponse(Object data, Response.Status status) {
-        ResponseBody body = ResponseBody.builder()
-                .status(Status.builder()
-                        .code(status.getStatusCode())
-                        .description(status.getReasonPhrase())
-                        .build())
-                .data(data)
-                .date(LocalDateTime.now())
-                .build();
-
-        return Response.status(status).entity(body).build();
-    }
-
-    private Response buildErrorResponse(Response.Status status, String message) {
-        ResponseBody body = ResponseBody.builder()
-                .status(Status.builder()
-                        .code(status.getStatusCode())
-                        .description(message)
-                        .build())
-                .date(LocalDateTime.now())
-                .build();
-
-        return Response.status(status).entity(body).build();
     }
 
     private Response buildInternalError(Throwable e) {
         log.error("Unexpected error: {}", e.getMessage(), e);
-        return buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Unexpected internal server error");
+        return HelpersResponse.buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, "Unexpected internal server error");
     }
 }

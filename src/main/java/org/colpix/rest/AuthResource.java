@@ -2,6 +2,8 @@ package org.colpix.rest;
 
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.mutiny.Uni;
+import jakarta.annotation.security.PermitAll;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -11,71 +13,76 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.colpix.repository.UserRepository;
-import org.colpix.repository.entity.UserEntity;
-import org.colpix.rest.dto.LoginRequest;
 import org.colpix.rest.dto.TokenResponse;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import java.util.Set;
 
-/*@Path("/auth")
+@Path("/auth")
+@ApplicationScoped
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Slf4j*/
+@PermitAll
+@Slf4j
 public class AuthResource {
-/*
+
+    public static final String ROLES = "user";
     @Inject
     UserRepository userRepository;
 
     @Inject
     @ConfigProperty(name = "jwt.duration", defaultValue = "300")
-    Long duration;
+    Long jwtDuration;
 
     @Inject
-    @ConfigProperty(name = "jwt.issuer", defaultValue = "colpix-api")
+    @ConfigProperty(name = "mp.jwt.verify.issuer", defaultValue = "auth-server")
     String jwtIssuer;
 
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> login(LoginRequest request) {
-        log.info("Login attempt: {}", request.getUsername());
+    public Uni<Response> login(Credentials credentials) {
+        log.info("Login attempt: {}", credentials.username);
 
-        return userRepository.findByUsernameReactive(request.getUsername())
-                .onItem().transformToUni(userOpt -> processLogin(request, userOpt))
+        return userRepository.findByUsername(credentials.username)
+                .onItem().transform(optUser -> {
+                    if (optUser.isEmpty() || !BCrypt.checkpw(credentials.password, optUser.get().passwordHash)) {
+                        log.warn("Invalid login for user: {}", credentials.username);
+
+                        return HelpersResponse.buildErrorResponse(Response.Status.UNAUTHORIZED,
+                                String.format("Invalid login for user: %S", credentials.username));
+                    }
+
+                    TokenResponse tokenResponse = generateToken(optUser.get().username);
+                    return Response.ok(tokenResponse).build();
+                })
                 .onFailure().invoke(e -> log.error("login - Error: {}", e.getMessage(), e))
                 .onFailure().recoverWithItem(
-                        Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                                .entity("Internal server error").build()
+                        HelpersResponse.buildErrorResponse(Response.Status.INTERNAL_SERVER_ERROR,
+                                "Unexpected internal server error")
                 );
     }
 
-    private Uni<Response> processLogin(LoginRequest request, Optional<UserEntity> userOpt) {
-        if (userOpt.isEmpty() || !userOpt.get().getPassword().equals(request.getPassword())) {
-            log.warn("Invalid login for user: {}", request.getUsername());
-            return Uni.createFrom().item(
-                    Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("Invalid username or password")
-                            .build()
-            );
-        }
-
+    private TokenResponse generateToken(String username) {
         Instant now = Instant.now();
-        Instant expiresAt = now.plus(duration, ChronoUnit.SECONDS);
+        Instant expiresAt = now.plus(jwtDuration, ChronoUnit.SECONDS);
 
-        // Generación del JWT
-        String token = Jwt.issuer(jwtIssuer) // Usamos el emisor configurable
-                .subject(userOpt.get().getUsername()) // El sujeto del token es el nombre de usuario
-                .groups(Set.of("user")) // Roles/grupos del usuario. Esto deberia venir de la BDD.
+        String token = Jwt.issuer(jwtIssuer) // Emisor configurable
+                .subject(username) // El sujeto del token es el nombre de usuario
+                .groups(Set.of(ROLES)) // Roles/grupos del usuario. Esto deberia venir de la BDD
                 .issuedAt(now) // Tiempo de emision
                 .expiresAt(expiresAt) // Tiempo de expiracion
-                .jws()
-                .sign(); // Firma el token
+                .sign();
+        return new TokenResponse(token, now, expiresAt);
+    }
 
-        return Uni.createFrom().item(Response.ok(new TokenResponse(token, expiresAt.getEpochSecond())).build());
-    }*/
+    public static class Credentials {
+        public String username;
+        public String password;
+    }
+
 }
