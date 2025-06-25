@@ -1,6 +1,7 @@
 package org.colpix.rest;
 
 import io.smallrye.mutiny.Uni;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Slf4j
+@RolesAllowed({"admin", "user"})
 public class EmployeeResource {
 
     @Inject
@@ -38,7 +40,6 @@ public class EmployeeResource {
                 .onItem().transform(this::buildOkResponse)
                 .onFailure().recoverWithItem(this::buildInternalError);
     }
-
     @GET
     @Path("/{id}")
     @Operation(summary = "Get employee by ID, including subordinate count")
